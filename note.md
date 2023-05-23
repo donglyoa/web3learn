@@ -54,3 +54,16 @@ truffle migrate (它会先编译后部署)
 
 在migrations中编写部署脚本，文件名一定要是数字开头: 1_deploy.js
 
+### 控制台测试
+
+truffle console（进入控制台）
+
+const obj = await StudentStorage.deployed() （实例化合约）
+
+obj.seData('kerwinliu', 100)
+
+obj.getData()
+
+
+
+
