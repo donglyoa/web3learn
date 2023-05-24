@@ -5,7 +5,7 @@ pragma solidity >=0.4.16 <0.9.0;
 contract StudentStorage {
     // 创建两个变量username, age
     uint age; // 无符号整型uint8 uint16 uint32 (uint 等于uint256)
-    string name;
+    string public name;
 
     function setData (string memory _name, uint _age) public {
         name = _name;

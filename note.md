@@ -3,7 +3,7 @@
 ### 文件结构
 * contracts solidity智能合约文件
 * migrations 部署脚本
-* test 测是文件
+* test 测试文件
 * truffle-config.js 配置文件
 
 ### solidity
@@ -50,7 +50,7 @@ truffle compile 编译只能合约，仅编译还未部署到区块链上；
 
 ### 部署
 
-truffle migrate (它会先编译后部署)
+truffle migrate (它会先编译后部署，它会把所有的智能合约编译一遍，然后全部部署到区块链上)
 
 在migrations中编写部署脚本，文件名一定要是数字开头: 1_deploy.js
 
@@ -63,6 +63,24 @@ const obj = await StudentStorage.deployed() （实例化合约）
 obj.seData('kerwinliu', 100)
 
 obj.getData()
+
+### 注意
+
+1. 状态变量设置public后会自动生成一个get方法
+
+```js
+    string public name
+
+    const obj = await StudentStorage.deployed()
+
+    obk.name()
+```
+
+2. 将结构体数组设置为public后也会自动生成一个get方法，但是直接调用是会报错的，需要传入数组的index，表示获取第几个结构体
+
+```js
+    await stduentListStorage.StudentList(1) 
+```
 
 
 
