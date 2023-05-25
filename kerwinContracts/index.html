@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id="myname">
+    <input type="text" id="myage">
+    <button id="add">add</button>
+    <ul id="list"></ul>
+    <script src="https://cdn.bootcdn.net/ajax/libs/web3/1.2.7/web3.js"></script>
+    <script type="module">
+        const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+
+        const StudentListStorage = await new web3.eth.Contract([
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "StudentList",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "age",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_age",
+          "type": "uint256"
+        }
+      ],
+      "name": "addList",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getList",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "age",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct StudentListStorage.Student[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    }
+  ], '0x7201D68aaA8E1d29Ad40dE9fcCFFa64a4099fb68')
+
+        const account = await web3.eth.requestAccounts()
+
+        const balance = await web3.eth.getBalance(account[0])
+
+        console.log(account, StudentListStorage, balance)
+
+        add.onclick = async () => {
+            console.log(myname.value, myage.value)
+
+            // 只要影响智能合约链上状态变量都是要付费的，所以要告诉智能合约从哪里扣费
+            await StudentListStorage.methods.addList(myname.value, myage.value).send({
+                from: account[0]
+            })
+
+            getList()
+        }
+
+        const getList = async () => {
+            // getList是一个view函数不消耗gas值的，不用send，但是要调用一个call，因为你是一个访问函数
+            const rs = await StudentListStorage.methods.getList().call()
+            console.log(rs)
+            list.innerHTML = rs.map((item) => (
+                `<li>${item.id} - ${item.name} - ${item.age} - ${item.account}</li>`
+            )).join('')
+        }
+
+        getList()
+    </script>
+</body>
+
+</html>

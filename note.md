@@ -52,6 +52,8 @@ truffle compile 编译只能合约，仅编译还未部署到区块链上；
 
 truffle migrate (它会先编译后部署，它会把所有的智能合约编译一遍，然后全部部署到区块链上)
 
+truffle migrate --reset 从头开始运行所有部署，而不是从上次完成的部署中运行。（我也不知道有啥用！）
+
 在migrations中编写部署脚本，文件名一定要是数字开头: 1_deploy.js
 
 ### 控制台测试

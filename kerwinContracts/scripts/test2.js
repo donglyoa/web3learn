@@ -7,9 +7,9 @@ module.exports = async (calldata) => {
 
     const list = await stduentListStorage.getList()
 
-    // console.log(list)
+    console.log(list)
 
-    console.log('StudentList ----', await stduentListStorage.StudentList(0))
+    // console.log('StudentList ----', await stduentListStorage.StudentList(0))
 
     calldata()
 }
