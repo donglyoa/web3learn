@@ -44,7 +44,22 @@ view函数或者pure函数调用不消耗gas；
 * 局部变量: 局部变量是仅在函数执行过程中有效的变量，函数退出后，变量无效；局部变量的数据存在内存中，不上链，gas低；局部变量在函数内声明；
 * 全局变量: 全局变量是全局范围工作的变量，都是solidity预留关键字，他们可以在函数内不声明直接使用，比如：msg.sender, block, number;
 
-### 编译
+#### 网页调用智能合约实例注意事项
+
+* 只要影响智能合约链上状态变量都是要付费的，所以要告诉智能合约从哪里扣费
+
+```js
+await StudentListStorage.methods.addList(myname.value, myage.value).send({
+    from: account[0]
+})
+```
+
+* 调用view函数不消耗gas值的，不用send，但是要调用一个call，因为你是一个访问函数
+```js
+const rs = await StudentListStorage.methods.getList().call()
+```
+
+## 编译
 
 truffle compile 编译只能合约，仅编译还未部署到区块链上；
 
@@ -52,7 +67,7 @@ truffle compile 编译只能合约，仅编译还未部署到区块链上；
 
 truffle migrate (它会先编译后部署，它会把所有的智能合约编译一遍，然后全部部署到区块链上)
 
-truffle migrate --reset 从头开始运行所有部署，而不是从上次完成的部署中运行。（我也不知道有啥用！）
+truffle migrate --reset 从头开始运行所有部署，而不是从上次完成的部署中运行。（一个部署脚本如果之前部署过一次，文件发生改变，需要重新部署的时候需要加上--reset，不然不会重新部署）
 
 在migrations中编写部署脚本，文件名一定要是数字开头: 1_deploy.js
 
@@ -84,6 +99,9 @@ obj.getData()
     await stduentListStorage.StudentList(1) 
 ```
 
+## 加密货币
 
+https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
 
+https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol
 

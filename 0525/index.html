@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id="username">
+    <input type="text" id="age">
+    <button id="add">add</button>
+    <ul id="list"></ul>
+    <script src="https://cdn.bootcdn.net/ajax/libs/web3/1.2.7/web3.js"></script>
+    <script type="module">
+        const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+        const studentListStorage = new web3.eth.Contract([
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "StduentList",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "age",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "_name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "_age",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "addList",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+
+            {
+                "inputs": [],
+                "name": "getList",
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256",
+                                "name": "id",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "name",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "age",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "address",
+                                "name": "account",
+                                "type": "address"
+                            }
+                        ],
+                        "internalType": "struct StudentListStorage.Student[]",
+                        "name": "",
+                        "type": "tuple[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            }
+        ], '0x473205D5Aa4EbfE62805BF570A900194fAEC57b3')
+        const account = await web3.eth.requestAccounts()
+
+        add.onclick = async function () {
+            console.log(username.value, age.value)
+            await studentListStorage.methods.addList(username.value, age.value).send({
+                from: account[0]
+            })
+
+            updateList()
+        }
+
+        async function updateList () {
+            const rs = await studentListStorage.methods.getList().call()
+
+            list.innerHTML = rs.map(({id, name, age, account}) => (`<li>${id} - ${name} - ${age} - ${account}</li>`)).join(' ')
+        }
+
+        updateList();
+    </script>
+</body>
+
+</html>
